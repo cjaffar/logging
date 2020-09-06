@@ -1,0 +1,38 @@
+#copy-print-csv_wrapper {
+  display:none;
+}
+
+.dataTables_paginate .pagination .page-item.disabled .page-link {
+  background: transparent; }
+.dataTables_paginate .pagination .page-item .page-link {
+  font-size: .75rem; }
+  .dataTables_paginate .pagination .page-item .page-link:hover {
+    background: #42a8ff;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px; }
+.dataTables_paginate .pagination .page-item.active .page-link {
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px; }
+
+button.dt-button, div.dt-button, a.dt-button {
+  border-radius: 30px !important;
+  border: 0 !important;
+  color: #ffffff !important;
+  background: #0074d6;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #0074d6 0%, #007ae1 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0074d6), color-stop(100%, #007ae1));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #0074d6 0%, #007ae1 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #0074d6 0%, #007ae1 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #0074d6 0%, #007ae1 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #0074d6 0%, #007ae1 100%);
+  /* W3C */ }
+  button.dt-button:hover, div.dt-button:hover, a.dt-button:hover {
+    background: #007ae1 !important; }

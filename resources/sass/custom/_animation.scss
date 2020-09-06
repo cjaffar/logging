@@ -1,0 +1,45 @@
+/************************************************
+	************************************************
+									Animations Css							
+	************************************************
+************************************************/
+@-webkit-keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 7%, 0);
+    transform: translate3d(0, 7%, 0);
+    visibility: visible;
+    opacity: 0.2; }
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 2; } }
+@keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 7%, 0);
+    transform: translate3d(0, 7%, 0);
+    visibility: visible;
+    opacity: 0.2; }
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 1; } }
+
+
+
+@-webkit-keyframes status-green {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(55, 232, 117, 0.9); }
+  70% {
+    -webkit-box-shadow: 0 0 0 10px rgba(55, 232, 117, 0); }
+  100% {
+    -webkit-box-shadow: 0 0 0 0 rgba(55, 232, 117, 0); } }
+@keyframes status-green {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(55, 232, 117, 0.9);
+    box-shadow: 0 0 0 0 rgba(55, 232, 117, 0.7); }
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(55, 232, 117, 0);
+    box-shadow: 0 0 0 10px rgba(55, 232, 117, 0); }
+  100% {
+    -moz-box-shadow: 0 0 0 0 rgba(55, 232, 117, 0);
+    box-shadow: 0 0 0 0 rgba(55, 232, 117, 0); } }

@@ -1,0 +1,12 @@
+$swal2-font-size: 0.75rem;
+$swal2-padding: 0.85rem;
+$swal2-width:48em;
+$swal2-border-radius: 0.15rem;
+
+
+#swal2-content {
+	.mail-content {
+		max-height: 62rem;
+		overflow-y:auto;
+	}
+}

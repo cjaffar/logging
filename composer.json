@@ -1,0 +1,16 @@
+{
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.2",
+        "slim/php-view": "^3.0",
+        "php-di/php-di": "^6.2",
+        "kint-php/kint": "^3.3",
+        "fzaninotto/faker": "^1.9",
+        "nesbot/carbon": "^2.39"
+    },
+    "autoload":{
+	    "psr-4": {
+	        "BidLog\\": "src/"
+	    }
+    }
+}

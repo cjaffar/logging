@@ -1,0 +1,112 @@
+.page-wrapper {
+  background: #f5f6fa; 
+
+}
+
+
+.page-wrapper .page-content {
+    display: inline-block;
+    width: 100%;
+    -webkit-transition: padding-left 0.5s ease;
+    -moz-transition: padding-left 0.5s ease;
+    -ms-transition: padding-left 0.5s ease;
+    -o-transition: padding-left 0.5s ease;
+    transition: padding-left 0.5s ease;
+    /*padding: 0 0 0 250px; */
+  }
+  .page-wrapper.pinned .page-content {
+    padding-left: 65px; }
+  .page-wrapper.pinned .sidebar-wrapper .sidebar-brand .logo {
+    max-width: 65px;
+    overflow: hidden;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis; }
+  .page-wrapper.pinned .sidebar-wrapper .sidebar-user-details .user-profile img.profile-thumb {
+    width: 50px;
+    height: 50px;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out; }
+  .page-wrapper.pinned .sidebar-wrapper .sidebar-user-details .user-profile h6.profile-name {
+    max-width: 40px;
+    margin: 10px auto 0 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; }
+  .page-wrapper.pinned .sidebar-wrapper .sidebar-user-details .user-profile .profile-status .progress {
+    min-width: 40px; }
+  .page-wrapper.pinned .sidebar-wrapper .sidebar-user-details .user-profile .profile-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+    .page-wrapper.pinned .sidebar-wrapper .sidebar-user-details .user-profile .profile-actions a {
+      font-size: .65rem;
+      text-align: center;
+      display: block;
+      width: 50px;
+      color: #2e323c;
+      position: relative;
+      padding: 3px 0; }
+  .page-wrapper.sidebar-hovered .sidebar-wrapper .sidebar-brand .logo {
+    max-width: 100%; }
+  .page-wrapper.sidebar-hovered .sidebar-wrapper .sidebar-user-details .user-profile img.profile-thumb {
+    width: 72px;
+    height: 72px;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out; }
+  .page-wrapper.sidebar-hovered .sidebar-wrapper .sidebar-user-details .user-profile h6.profile-name {
+    max-width: 150px; }
+  .page-wrapper.sidebar-hovered .sidebar-wrapper .sidebar-user-details .user-profile .profile-status .progress {
+    min-width: 150px; }
+
+@media screen and (max-width: 768px) {
+  .page-wrapper .sidebar-wrapper {
+    left: -265px; }
+  .page-wrapper.toggled .sidebar-wrapper {
+    left: 0; }
+  .page-wrapper.toggled .header {
+    padding-left: 245px !important; }
+  .page-wrapper .page-content {
+    padding-left: 0; }
+  .page-wrapper.pinned .page-content {
+    padding-left: 0; } }
+@media (min-width: 768px) {
+  .page-wrapper.pinned:not(.sidebar-hovered) .sidebar-wrapper {
+    width: 65px; }
+
+  .page-wrapper.pinned:not(.sidebar-hovered) .sidebar-wrapper .sidebar-menu .sidebar-submenu,
+  .page-wrapper.pinned:not(.sidebar-hovered) .sidebar-wrapper .sidebar-menu ul > li > a > span,
+  .page-wrapper.pinned:not(.sidebar-hovered) .sidebar-wrapper .sidebar-menu ul > li > a::after {
+    display: none !important; } }
+.sidebar-mini .sidebar-wrapper {
+  width: 150px; }
+  .sidebar-mini .sidebar-wrapper .sidebar-menu {
+    padding-bottom: 10px; }
+    .sidebar-mini .sidebar-wrapper .sidebar-menu ul li a {
+      flex-direction: column;
+      padding: 10px 15px 10px 15px; }
+      .sidebar-mini .sidebar-wrapper .sidebar-menu ul li a i {
+        margin: 0; }
+    .sidebar-mini .sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {
+      right: 40px;
+      top: 18px; }
+    .sidebar-mini .sidebar-wrapper .sidebar-menu .sidebar-dropdown.active > a:after {
+      right: 40px; }
+    .sidebar-mini .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu ul li a:before {
+      content: '';
+      margin: 0; }
+    .sidebar-mini .sidebar-wrapper .sidebar-menu .active > a:before {
+      top: 15px; }
+.sidebar-mini .page-content {
+  padding: 0 0 0 150px; }
+
+
+
+
+

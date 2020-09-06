@@ -1,0 +1,83 @@
+/************************************************
+	************************************************
+										Page Header
+	************************************************
+************************************************/
+.page-header {
+  padding: 0;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; }
+
+.app-actions {
+  display: flex;
+  flex-direction: row; }
+  .app-actions .btn {
+    display: flex;
+    align-items: center;
+    font-size: .75rem;
+    margin: 0 0 0 5px;
+    color: #2e323c;
+    background: #f5f6fa;
+    border: 1px solid #e1e5f1;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+    position: relative; }
+    .app-actions .btn:hover {
+      background: #007ae1;
+      border: 1px solid #007ae1;
+      color: #ffffff; }
+      .app-actions .btn:hover:after {
+        content: '';
+        background: url(../img/lines.svg) no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-size: 150%;
+        background-position: center center; }
+    .app-actions .btn.active {
+      background: #007ae1;
+      border: 1px solid #007ae1;
+      color: #ffffff; }
+      .app-actions .btn.active:after {
+        content: '';
+        background: url(../img/lines.svg) no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-size: 150%;
+        background-position: center center; }
+  .app-actions #reportrange {
+    padding: .4rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background: #007ae1;
+    box-shadow: none;
+    border: 1px solid #007ae1;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px;
+    width: auto;
+    color: #ffffff;
+    font-size: .75rem; }
+    .app-actions #reportrange span.range-text {
+      margin: 0 5px 0 5px; }
+
+@media (max-width: 576px) {
+  .app-actions {
+    display: none; } }
+
+
+
+
+
+
+
+
