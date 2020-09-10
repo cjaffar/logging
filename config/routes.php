@@ -16,13 +16,30 @@ return function($app) {
 
 		$group->get('/fake', Controller\Search::class . ':fake');
 		$group->post('/{client-slug}/{page}[/{format}]', Controller\Search::class . ':search')->add(new Authorised());
+		$group->get('/get-clients/{system}', Controller\Search::class . ':getClients')->add(new Authorised());
+		$group->get('/aws-log/{logid}', Controller\Search::class . ':getAWSLog')->add(new Authorised());
 		$group->get('', Controller\Search::class . ':index')->add(new Authorised());
 
 	});
 
+
+	/**
+	 * this root is abandoned. may be safely deleted.
+	 */
+	$app->group('/aws', function (RouteCollectorProxy $group) {
+
+		$group->get('/get-file', Controller\AWS::class . ':getFile');
+		$group->get('', Controller\AWS::class . ':index');
+	});
+
 	$app->group('/client', function (RouteCollectorProxy $group) {
 
-		$group->get('/fake', Controller\System::class . ':fake');
+		$group->get('/fake', Controller\Client::class . ':fake');
+		$group->get('/add', Controller\Client::class . ':getAddClient')->add(new Authorised());;
+		$group->post('/add', Controller\Client::class . ':postAddClient')->add(new Authorised());;
+		$group->get('/edit/{client-slug}', Controller\Client::class . ':getEditClient')->add(new Authorised());;
+		$group->post('/edit/{client-slug}', Controller\Client::class . ':postEditClient')->add(new Authorised());;
+		$group->get('', Controller\Client::class . ':index')->add(new Authorised());;
 
 	});
 

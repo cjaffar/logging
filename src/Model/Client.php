@@ -26,7 +26,7 @@ class Client extends _Model {
 		$vars['active'] = $active;
 		// $vars['1'] = 1;
 
-		$table_cols = [ 'system', 'slug', 'name', 'created' ];
+		$table_cols = [ 'id', 'system', 'slug', 'name', 'created' ];
 		foreach($params as $k => $v) {
 			if(in_array($k, $table_cols) && !empty($v)) {
 				$vars[$k] = $v;
@@ -39,6 +39,66 @@ class Client extends _Model {
 		$results = $this->getAll($sql, array_values($vars) );
 
 		return ($results) ? $results : [] ;
+	}
+
+	/**
+	* Add new client.
+	*/
+	public function add(array $params): int
+	{
+
+		$vars = [];
+		foreach($params as $key => $value) {
+			$vars[$key] = $value;
+		}
+
+		$vars['active'] = 1;
+		$vars['created'] = date('Y-m-d H:i:s');
+
+		$count = 0;
+		$sql = "INSERT IGNORE INTO {$this->table}(" . implode(",", array_keys($vars)) . ")  VALUES(?, ? ,? ,?, ?)";
+
+		if( $this->doInsert($sql, array_values($vars) ) ) {
+			$count++;
+		}	
+
+		return $count;
+	}
+	
+	/**
+	* Update Client settings.
+	 */
+	public function edit(string $slug, array $params): array
+	{
+
+		$client = $this->getClients(['slug' => $slug], 1);
+
+		if(!$client) {
+			return [];
+		}
+		
+		$vars = [];
+		$valid_cols = ['system', 'name', 'active'];
+		foreach($params as $key => $value) {
+			if(in_array($key, $valid_cols)) {
+				$vars[$key] = $value;
+			}
+		}
+		
+		if(!$vars) {
+			return [];
+		}
+
+		$sql = "UPDATE {$this->table} SET ";
+		$sql .= implode('=?,', array_keys($vars)) . '=?';
+		$sql .= ' WHERE slug LIKE(?) LIMIT 1';
+
+		$vars['slug'] = $slug;
+		if( $this->doUpdate( $sql, array_values($vars) ) ) {
+			return $this->getClients( ['slug' => $slug ], 1);
+		}
+		
+		return [];
 	}
 
 	/**

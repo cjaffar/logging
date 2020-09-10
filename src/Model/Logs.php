@@ -5,7 +5,7 @@ use PDO;
 
 class Logs extends _Model {
 	
-	protected String $table = 'logs';
+	protected string $table = 'logs';
 
 	/**
 	* Constructor. Takes in PDO Conn
@@ -28,7 +28,7 @@ class Logs extends _Model {
 	/**
 	* Get All logs
 	*/
-	public function getLogs(array $params, array $columns=[], bool $count_only=false, int $start=0, int $stop = 500000000) : array
+	public function getLogs(array $params, array $columns=[], bool $count_only=false, int $start=0, int $limit = 500000000) : array
 	{
 		if(!$columns) { $columns = ['*']; }
 
@@ -51,6 +51,11 @@ class Logs extends _Model {
 			$where_and['clientid'] = ' l.clientid = ? ';
 			$vars[] = (int)$params['clientid'];
 		}
+		
+		if(isset($params['id'])) {
+			$where_and['id'] = ' l.id = ? ';
+			$vars[] = (int)$params['id'];
+		}
 
 		if(isset($params['date1']) && isset($params['date2']) ) {
 			$where_and['datebetween'] = ' l.created BETWEEN ? AND ?';
@@ -58,15 +63,19 @@ class Logs extends _Model {
 			$vars[] = $params['date2'];
 		}
 
-		if(isset($params['email'])) {
+		if(isset($params['email_from'])) {
 			$where_or['address_from'] = ' address_from LIKE ?'; //(int)$params['clientid'];
-			$vars[] = "%{$params['email']}%";
-
+			$vars[] = "%{$params['email_from']}%";
+		}
+		
+		if(isset($params['email_to'])) {
 			$where_or['address_to'] = ' address_to LIKE ?'; //(int)$params['clientid'];
-			$vars[] = "%{$params['email']}%";
+			$vars[] = "%{$params['email_to']}%";
+		}
 
-			$where_or['address_replyto'] = ' address_replyto LIKE ?'; //(int)$params['clientid'];
-			$vars[] = "%{$params['email']}%";
+		if(isset($params['email_reply'])) {
+			$where_or['address_replyto'] = ' address_reply to LIKE ?'; //(int)$params['clientid'];
+			$vars[] = "%{$params['email_replyto']}%";
 		}
 
 		// if(isset($params['email'])) {
@@ -84,8 +93,15 @@ class Logs extends _Model {
 		$sql .= ($where_or) ? ' ( ' . implode( ' OR  ', $where_or ) . ')' : '';
 
 		if(isset($params['subject'])) {
-			$sql .= (stripos($sql, 'WHERE', ) === false) ? ' WHERE ' : ' AND ';
+			$sql .= (stripos($sql, 'WHERE' ) === false) ? ' WHERE ' : ' AND ';
 			$sql .= ' MATCH(subject) AGAINST(?) ';
+
+			$vars[] = '%'.trim($params['subject']).'%';
+		}
+
+		if(isset($params['detail`'])) {
+			$sql .= (stripos($sql, 'WHERE' ) === false) ? ' WHERE ' : ' AND ';
+			$sql .= ' MATCH(detail) AGAINST(?) ';
 
 			$vars[] = '%'.trim($params['subject']).'%';
 		}
@@ -96,8 +112,8 @@ class Logs extends _Model {
 		}
 
 		$sql .= " ORDER BY l.created DESC";
-		$sql .= ' LIMIT ' . (int)$start . ',' . (int)$stop;
-
+		$sql .= ' LIMIT ' . $start . ','. $limit;// . (int; // . ' OFFSET ' . ;
+// d($vars);
 // echo $sql;
 		return $this->getAll($sql, array_values($vars) );
 	}

@@ -156,8 +156,9 @@
   position: relative;
   align-items: center;
   justify-content: center; 
+  font-size:1.2rem;
 }
-.header-actions > li > a > i {
+.header-actions > li > a > ion {
   font-size: 1.2rem;
   color: #9fa8b9; 
 }
@@ -456,7 +457,22 @@ ul.header-notifications {
       border-bottom: 0; }
 
 
-
+select#inputClient {
+	min-width:12rem;
+}
 .logs-table {
   background:$white;
+  .dataTables_filter{
+    display:none;
+  }
+
+  td {
+    margin: 0!important;
+  }
+}
+
+.table {
+	&.dataTable {
+		border-collapse:collapse !important;
+	}
 }

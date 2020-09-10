@@ -37567,6 +37567,8 @@ return DataTable;
 var picker;
 var query_params;
 var datatable;
+var page_number = 1;
+var numberofpages = 1;
 
 $(document).ready(function(){
 	$('.password-change').hide();
@@ -37580,25 +37582,39 @@ $(document).ready(function(){
 				singleDate: false,
 				maxDate: moment().add(1, 'day'),
 				minDate: moment().subtract(minlog, 'day'),
+				numberOfMonths: 2,
+				dropdowns: {
+					years: {
+						minYear: 1990,
+						maxYear: null,
+						min:1990,
+						max:null
+					}
+				}
+//			}
 			}
 		);
+		picker.setDateRange(moment().subtract(30, 'day'), new Date());
 	}
 
-	if( $('.table').length ) {
-		datatable = $('.table').DataTable({
+	if( $('.log-table').length ) {
+		datatable = $('.log-table').DataTable({
 			// data: dataset
             "columns": [
                 { 
                 	"data":"created",
-                	render: function(data, datatype, row, meta) {
-                		return '<a href="#" class="view-log" data-detail="' + row['detail'] + '"  data-system="' + row['system'] + '" data-subject="' + row['subject'] + '" data-created="' + row['created'] + '" data-email="' + row['address_from'] + '" data-to="' + row['address_to'] + '" data-detail="' + row['detail'] + '"><ion-icon name="eye-outline" size="medium"></ion-icon></a>&nbsp;&nbsp;' + data;
-                	}
                 },
-                { "data":"system" },
+                // { "data":"system" },
                 { "data":"address_from" },
                 { "data":"address_to"},
                 { "data":"address_replyto"},
-                { "data":"subject"}
+                { "data":"subject"},
+                { 
+            		"data" : "id",
+            		render:function(data, datatype, row, meta) {
+            			return '<a href="#" class="view-log" data-rowid="' + row['id'] + '" data-detail="' + row['detail'] + '"  data-system="' + row['system'] + '" data-subject="' + row['subject'] + '" data-created="' + row['created'] + '" data-email="' + row['address_from'] + '" data-to="' + row['address_to'] + '" data-detail="' + row['detail'] + '"><ion-icon name="eye-outline" size="medium"></ion-icon>&nbsp;&nbsp;View</a>' ;
+            		}
+        		}
             ],
             "language": {
 			    search: '<i class="fa fa-filter" aria-hidden="true"></i> Filter',
@@ -37606,7 +37622,15 @@ $(document).ready(function(){
 			},
             "paging": false,
             "ordering": false,
-            "info":false
+            "info":false,
+            // "search":false
+		});
+	}
+
+	if( $('.datatable').length ) {
+		datatables = $('.datatable').DataTable({
+            "paging": false,
+            "ordering": false,
 		});
 	}
 });
@@ -37690,6 +37714,8 @@ $(document).on('submit', '.profileFrm', function(e){
 	frm = $(this).serialize();
 	url = $(this).attr('action');
 	success_url = $('#success_url').val();
+	
+	$('.profileFrm').remove('.alert-warning');
 
 	fetch(url, {
 		method:'POST',
@@ -37699,8 +37725,18 @@ $(document).on('submit', '.profileFrm', function(e){
     	},
 		body: frm
 	})
-	.then(response => response.json())
+	.then(function(response) {
+		if(response.ok) {
+			return response.json();
+		}
+		
+		throw new Error(response.statusText);
+	})
 	.then(data => {
+		
+		if(!data['success']) {
+			$('.profileFrm').before('<div class="alert alert-warning mb-2">Editing Profile failed, please try again.</div>');
+		}
 		
 		if(data['success']) {
 			window.location = success_url;
@@ -37711,19 +37747,26 @@ $(document).on('submit', '.profileFrm', function(e){
 		// $('.login-errors').show();
 	})
 	.catch((err) => {
-		console.log(err)
+		$('.profileFrm').before('<div class="alert alert-warning mb-2">Editing Profile failed: ' + err + '</div>');
 	});
 });
 
 $(document).on('submit', '.frmSearch', function(e) {
 
 	e.preventDefault();
+	
+	page_number = 1;
 
 	var client = $("#inputClient").val();
 	var email = $('#inlineAddress').val();
 	var subject = $('#inlineSubject').val();
+	var detail = $('#inlineDetail').val();
 	var date1 = picker.getStartDate();
 	var date2 = picker.getEndDate();
+	
+	var email_from = $('#inlineAddressFrom').val()
+	var email_to = $('#inlineAddressTo').val()
+	var email_reply = $('#inlineAddressReplyTo').val()
 
 	var url = $('#search_url').val();
 	url += client + '/1';
@@ -37731,12 +37774,24 @@ $(document).on('submit', '.frmSearch', function(e) {
 	$('.logs-loading').show();
 
 	query_params = {}
-	if($.trim(email) != '') {
-		query_params['email'] = $.trim(email);
+	if($.trim(email_from) != '') {
+		query_params['email_from'] = $.trim(email_from);
+	}
+	
+	if($.trim(email_to) != '') {
+		query_params['email_to'] = $.trim(email_to);
+	}
+	
+	if($.trim(email_reply) != '') {
+		query_params['email_reply'] = $.trim(email_reply);
 	}
 
 	if($.trim(subject) != '') {
 		query_params['subject'] = $.trim(subject);
+	}
+
+	if($.trim(detail) != '') {
+		query_params['detail'] = $.trim(detail);
 	}
 
 	if($.trim(date1) != '') {
@@ -37752,11 +37807,19 @@ $(document).on('submit', '.frmSearch', function(e) {
 	return doSearch(url, 1);
 });
 
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-primary'
+  },
+  buttonsStyling: false
+})
 
 $(document).on('click', '.view-log', function(e){
 	e.preventDefault();
 
 	var system =  $(this).data('system');
+	var thisid = $(this).data('rowid');
 
 	var html = '<div class="row"><div class="col-12 text-left justify-content-left"><strong>System: </strong>' + system + '<br />';
 	html += "<strong>Date:</strong>" + $(this).data('created') + '<br />';
@@ -37772,6 +37835,8 @@ $(document).on('click', '.view-log', function(e){
 	Swal.fire({
 
 	  title: 'View Log.',
+	  showCancelButton: true,
+	  cancelButtonText: ' <ion-icon name="archive-outline"></ion-icon> Download Log',
 	  showClass: {
 	    popup: 'animate__animated animate__fadeInDown'
 	  },
@@ -37780,6 +37845,38 @@ $(document).on('click', '.view-log', function(e){
 	  },
       html: html,
 		
+	}).then((result) => {
+		if (result.dismiss === Swal.DismissReason.cancel) {
+
+			var url = '/search/aws-log/' + thisid;
+			fetch(url)
+			.then(function(resp) {
+				if(resp.ok) {
+					return resp.json();
+				}
+				
+				throw new Error(resp.statusText);
+			})
+			.then(data => {
+				if(data['location']) {
+					var win = window.open( data['location'] , '_blank');
+					win.focus();
+					return;
+				}
+				
+				if(data['error']) {
+					Swal.fire(
+						'Error downloading log file.',
+						data['error'],
+						'error'
+					);
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+				Swal.fire('500 error', error.text, 'error');
+			});
+		}
 	});
 });
 
@@ -37799,7 +37896,7 @@ var doSearch = function( url, page ) {
 	  	$('.logs-loading').hide();
 	  	$('#copy-print-csv_wrapper').show();
 	  	$('#copy-print-csv').show();
-console.log(query_params);
+
 	  	if(data['location']) {
 	  		window.location = data['location'];
 	  		return;
@@ -37813,12 +37910,17 @@ console.log(query_params);
 	  		$('.pages').html( data.pagination );
 	  	}
 
+	  	numberofpages = data['num_pages']; 
+	  	if(numberofpages <= 1) {
+	  		$('.next').attr('disabled', 'disabled');
+	  		$('.prev').attr('disabled', 'disabled');
+	  	}
 	  	// $('#copy-print-csv_wrapper').remove
-	  	$( '.download-pdf' ).remove();
+	  	$( '.download-csv' ).remove();
 
-	  	var download_btn = '<a href="#" class="btn btn-primary download-pdf" data-href="'+ url +'/pdf">';
-	  	download_btn += '<span class="badge badge-white"><ion-icon name="cloud-download-outline"></ion-icon></span> Download PDF';
-	  	download_btn += '<span class="sr-only">unread messages</span>';
+	  	var download_btn = '<a href="#" class="btn btn-primary download-csv float-right" data-href="'+ url +'/pdf">';
+	  	download_btn += '<span class="badge badge-white"><ion-icon name="cloud-download-outline"></ion-icon></span> Download CSV';
+//	  	download_btn += '<span class="sr-only">unread messages</span>';
 	  	download_btn += '</a>';
 
 	  	$('#copy-print-csv_filter').before( download_btn );
@@ -37828,7 +37930,6 @@ console.log(query_params);
 		});
 	})
 	.catch((error) => {
-	  console.error('Error:', error);
 
 	  $('.logs-loading').hide();
 	  $('#copy-print-csv').show();
@@ -37839,16 +37940,124 @@ console.log(query_params);
 $(document).on('click', '.page-link', function(e) {
 	e.preventDefault();
 
+	if($(this).hasClass('prev')) {
+		page_number = page_number - 1;
+	}
+	
+	if($(this).hasClass('next')) {
+		page_number = page_number + 1;
+	}
+	console.log(numberofpages);
+	console.log(page_number);
+	if(page_number > numberofpages) {
+		page_number = numberofpages;
+		return;
+	}
+	
+	if(page_number <= 0) {
+		page_number = 1;
+		return;
+	}
+	
 	var url = $(this).data('href');
-	doSearch(url, $(this).data('number'));
+	doSearch(url + page_number, page_number );
+
+	$('.page-number-1').text( page_number );
 
 });
 
-$(document).on('click', '.download-pdf', function(e){
+$(document).on('click', '.download-csv', function(e){
 	e.preventDefault();
 
 	var url = $(this).data('href');
 	doSearch( url, 1 );
-})
+});
+
+$(document).on('click', '.view-aws-file', function(e){
+	e.preventDefault();
+
+	var url = '/aws/get-file?file=' + encodeURIComponent( $(this).data('href') );
+
+	fetch(url)
+	.then( response => response.json() )
+	.then( data => {
+
+		if(data['error']) {
+			Swal.fire(
+				'Error getting a file from AWS.',
+				data['error'],
+				'error'
+			);
+
+			return;
+		}
+
+		if(data['location']) {
+			window.location = data['location'];
+		}
+	});
+});
+
+$(document).on('change', '#inputSystem', function(e) {
+
+	$('#inputClient').empty();
+
+	if($(this).val() == '') {
+		$('.log-search').hide();
+	}
+
+	if($(this).val() != '') {
+
+		var url = '/search/get-clients/' + $(this).val();
+		fetch(url)
+		.then(response=>response.json())
+		.then(data => {
+
+			if(data['clients'].length == 0) { $('.log-search').hide(); return; }
+
+			$.each(data['clients'], function(key, val) {
+				$('#inputClient').append( new Option(val['name'], val['slug']) );
+			});
+
+			$('.log-search').show();
+
+		});
+
+	}
+});
+
+$(document).on('submit', '.frmClientNew', function(e){
+	e.preventDefault();
+
+	var url = $(this).attr('action');
+	var params = {};
+	
+	$('.card').remove('.alert-warning');
+	params['system'] = $('#system').val();
+	params['name'] = $('#name').val();
+	params['slug'] = $('#slug').val();
+
+	fetch(url, {
+		method:'POST',
+  		headers: {
+    		'Content-Type': 'application/json',
+  		},
+  		body: JSON.stringify( params )
+	})
+	.then(response => response.json())
+	.then(data => {
+		
+		if(data['success']) {
+			window.location = '/client';
+		}
+		
+		if(data['success'] == false) {
+			$('.frmClientNew').before('<div class="alert alert-warning mb-2">Client edit/add failed, please try again.</div>');
+		}
+		
+	});
+});
+
+//frmClientEdit
 
 $('form').parsley();

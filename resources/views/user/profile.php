@@ -29,7 +29,12 @@ switch($function) {
 			<div class="col-12">
 				<div class="form-group">
 					<label for="inputReadOnly">Username</label>
-					<input class="form-control form-control-lg" id="inputReadOnly" type="text" name="username" placeholder="Readonly input" readonly="" value="<?php echo $profile['username']; ?>">
+					<?php if($function == 'add'): ?>
+					<input class="form-control form-control-lg" id="username" name="username" type="text" placeholder="Username" />
+					<?php else :?>
+						<p><?php echo $profile['username']; ?> <?php if (isset($profile['admin']) && $profile['admin'] == 1) { ?><span class="badge badge-pill badge-success">Administrator</span><?php }; ?></p>
+						<input class="form-control form-control-lg" id="username" name="username" type="hidden" placeholder="Username" value="<?php echo $profile['username']; ?>" />
+					<?php endif; ?>
 				</div>
 			</div>
 			<div class="col-12">
@@ -59,19 +64,6 @@ switch($function) {
 					<input type="password" class="form-control form-control-lg" id="inputPwd2" name="inputPwd2" placeholder="Password"data-parsley-equalto="#inputPwd" />
 				</div>
 			</div>
-
-			<?php if (isset($user['admin']) && $user['admin'] == 1) : ?>
-
-			<div class="col-12">
-				<div class="form-check mb-2 mr-sm-2">
-					<input class="form-check-input" type="checkbox" id="isAdmin" name="isAdmin" <?php if($profile['admin'] == 1) { ?>checked="checked<?php } ?>>
-					<label class="form-check-label" for="isAdmin">
-						Is Admin
-					</label>
-				</div>
-			</div>
-
-			<?php endif; ?>
 
 			<div class="col-xl-4 col-lglg-4 col-md-4 col-sm-4 col-12 mt-4">
 				<div class="form-group">

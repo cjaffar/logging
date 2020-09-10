@@ -3,10 +3,6 @@
 declare(strict_types=1);
 
 // Error reporting for production
-error_reporting(1);
-ini_set('display_errors', '1');
-
-date_default_timezone_set('Africa/Johannesburg');
 
 $settings = [];
 
@@ -17,8 +13,60 @@ $settings['public'] = $settings['root'] . '/public';
 $settings['assets_path'] = $settings['public'] . '/assets/';
 $settings['templates'] = $settings['root'] . '/resources/views/';
 
-$db_creds = json_decode( file_get_contents( $settings['root'] . '/settings.json' ), true );
-$db_creds = $db_creds['db'];
+//local environment settings.
+$local_settings = json_decode( file_get_contents( $settings['root'] . '/settings.json' ), true );
+
+$hostfile = (isset($local_settings['environment'])) ? $local_settings['environment'] : '';
+switch($hostfile) :
+	case 'prod' :
+		error_reporting(0);
+		ini_set('display_errors', '0');
+	
+		date_default_timezone_set('Africa/Johannesburg');
+		$environment_settings = 'prod.settings.json';
+		break;
+		
+	case 'dev': case 'staging':
+		error_reporting(1);
+		ini_set('display_errors', '1');
+		
+		date_default_timezone_set('Africa/Johannesburg');
+		$environment_settings = 'dev.settings.json';
+		break;
+		
+	default:
+		error_reporting(1);
+		ini_set('display_errors', '1');
+		
+		date_default_timezone_set('Africa/Johannesburg');
+		$environment_settings = 'local.settings.json';
+		break;
+		
+		
+		$environment_settings = [];
+endswitch;
+
+if(is_file($settings['root'] . '/' . $environment_settings)) {
+	$env = json_decode( file_get_contents( $settings['root'] . '/' . $environment_settings), true );
+
+    foreach($env as $k => $v) { /// file has only two depths of array
+
+        if(is_array($v) && !empty($v)) {
+
+            foreach($v as $ck => $cv) {
+
+                $local_settings[$k][$ck] = $cv;
+            }
+            
+        } else {
+            $local_settings[$k] = $v;
+        }
+    }
+}
+
+
+$db_creds = $local_settings['db'];
+$aws = $local_settings['aws'];
 
 // Error Handling Middleware settings
 $settings['error'] = [
@@ -35,6 +83,13 @@ $settings['error'] = [
     'log_error_details' => true,
 ];
 
+$settings['aws'] = [
+    'id' => $aws['access_id'],
+    'key' => $aws['access_key'],
+    'bucket' => $aws['bucket'],
+    'folder' => $aws['folder']
+];
+
 $settings['db'] = [
     'driver' => $db_creds['driver'],
     'host' => $db_creds['host'],
@@ -43,6 +98,7 @@ $settings['db'] = [
     'password' => $db_creds['password'],
     'charset' => $db_creds['charset'],
     'collation' => $db_creds['collation'],
+    'systems' => $db_creds['systems'],
     'flags' => [
         // Turn off persistent connections
         PDO::ATTR_PERSISTENT => false,

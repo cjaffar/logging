@@ -17,7 +17,7 @@
 
 			<?php include 'header.php'; ?>
 
-			<div class="main-container container">
+			<div class="main-container <?php echo (isset($page_type) && $page_type =='search') ? 'container-fluid' : 'container'; ?>">
 
 					<div class="page-header">
 						
@@ -37,11 +37,7 @@
 
 							<?php endforeach; ?>
 						<?php endif; ?>
-<!-- 							<button type="button" class="btn">Today</button>
-							<button type="button" class="btn">Yesterday</button>
-							<button type="button" class="btn">7 days</button>
-							<button type="button" class="btn">15 days</button>
-							<button type="button" class="btn active">30 days</button> -->
+
 						</div>
 						<!-- App actions end -->
 
