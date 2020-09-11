@@ -72,6 +72,11 @@ class _Controller {
         return $this->title;
     }
     
+    /**
+     * 
+     * @param string $key
+     * @param unknown $val
+     */
     public function addData(string $key, $val): void
     {
     	$this->data[$key] = $val;

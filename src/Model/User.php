@@ -122,7 +122,7 @@ class User extends _Model
 	* @param @$pwd String
 	* @return array user credentials signify a successful password reset.
 	*/
-	public function resetPassword(String $username, String $pwd) : array
+	public function resetPassword(string $username, string $pwd) : array
 	{
 
 		$user = $this->getUser($username);
@@ -131,12 +131,13 @@ class User extends _Model
 			return [];
 		}
 		
-		$password_h = $this->preparePassword($user['salt'] , $username);
+		$password_h = $this->preparePassword($user['salt'] , $pwd);
 
 		$sql = "UPDATE {$this->table} SET password = ? WHERE username LIKE ? LIMIT 1";
-		$qry = $this->doUpdate($sql, [$username, $password_h]);
+		$qry = $this->doUpdate($sql, [$password_h, $username]);
 
 		if($qry) {
+			
 			unset($user['password']);
 			unset($user['salt']);
 

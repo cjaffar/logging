@@ -43,7 +43,7 @@
 									<form action="/login/creds-change" action="post" class="frm pwdChangeFrm">
 										<h5>Please change your password!</h5>
 										<div class="form-group">
-											<input type="password" id="password-new" name="password" class="form-control" required="required" placeholder="New password">
+											<input type="password" id="password-new" name="password" class="form-control" required="required" data-parsley-minlength="6" data-parsley-special="1" data-parsley-number="1" placeholder="New password">
 										</div>
 										<div class="form-group">
 											<input type="password" name="password2" class="form-control" placeholder="Confirm Password" data-parsley-equalto="#password-new">
