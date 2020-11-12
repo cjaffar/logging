@@ -5,7 +5,7 @@ use PDO;
 
 class Logs extends _Model {
 	
-	protected string $table = 'logs';
+	protected String $table = 'email_log';//'logs';
 
 	/**
 	* Constructor. Takes in PDO Conn
@@ -19,7 +19,7 @@ class Logs extends _Model {
 	}
 
 	public function minLog() {
-		$sql = "select min(created) as created from {$this->table}";
+		$sql = "select min(queue_date) as created from {$this->table}";
 
 		$qry = $this->getOne($sql, []);
 		return ($qry) ? $qry : [];
@@ -31,13 +31,17 @@ class Logs extends _Model {
 	public function getLogs(array $params, array $columns=[], bool $count_only=false, int $start=0, int $limit = 500000000) : array
 	{
 		if(!$columns) { $columns = ['*']; }
+		
+		foreach($columns as $key => $val) {
+			if($val =='l.created') { $columns[$key] = 'queue_date as created'; } //new schema 
+		}
 
 		$columns = implode(',', $columns);
 		
 		$sql = "SELECT {$columns} FROM {$this->table} l ";
 
 		if($count_only) {
-			$sql = "SELECT count(l.id) AS total FROM {$this->table} l ";
+			$sql = "SELECT count(l.guid) AS total FROM {$this->table} l ";
 		}
 
 		$sub_sql = "";
@@ -48,41 +52,41 @@ class Logs extends _Model {
 		$where_or = [];
 
 		if(isset($params['clientid'])) {
-			$where_and['clientid'] = ' l.clientid = ? ';
+			$where_and['client'] = ' l.client_key = ? ';
 			$vars[] = (int)$params['clientid'];
 		}
 		
-		if(isset($params['id'])) {
-			$where_and['id'] = ' l.id = ? ';
-			$vars[] = (int)$params['id'];
+		if(isset($params['guid'])) {
+			$where_and['guid'] = ' l.guid = ? ';
+			$vars[] = (int)$params['guid'];
 		}
 
-		if(isset($params['date1']) && isset($params['date2']) ) {
-			$where_and['datebetween'] = ' l.created BETWEEN ? AND ?';
-			$vars[] = $params['date1'];
-			$vars[] = $params['date2'];
-		}
+// 		if(isset($params['date1']) && isset($params['date2']) ) {
+// 			$where_and['datebetween'] = ' l.queue_date BETWEEN ? AND ?';
+// 			$vars[] = $params['date1'];
+// 			$vars[] = $params['date2'];
+// 		}
 
 		if(isset($params['email_from'])) {
-			$where_or['address_from'] = ' address_from LIKE ?'; //(int)$params['clientid'];
+			$where_or['from_address'] = ' from_address LIKE ?'; //(int)$params['clientid'];
 			$vars[] = "%{$params['email_from']}%";
 		}
 		
 		if(isset($params['email_to'])) {
-			$where_or['address_to'] = ' address_to LIKE ?'; //(int)$params['clientid'];
+			$where_or['to_address'] = ' to_address LIKE ?'; //(int)$params['clientid'];
 			$vars[] = "%{$params['email_to']}%";
 		}
 
-		if(isset($params['email_reply'])) {
-			$where_or['address_replyto'] = ' address_reply to LIKE ?'; //(int)$params['clientid'];
-			$vars[] = "%{$params['email_replyto']}%";
-		}
+// 		if(isset($params['email_reply'])) {
+// 			$where_or['address_replyto'] = ' address_reply to LIKE ?'; //(int)$params['clientid'];
+// 			$vars[] = "%{$params['email_replyto']}%";
+// 		}
 
 		// if(isset($params['email'])) {
 			// $vars['clientid'] = (int)$params['clientid'];
 		// }
 
-		$sql .= " LEFT JOIN clients c ON c.id = l.clientid ";
+		$sql .= " LEFT JOIN clients c ON c.guid = l.client_key ";
 
 		$sql .= ($where_and || $where_or) ? ' WHERE ' : ''; //and the where keyword if we have any and-or where blocks.
 
@@ -94,24 +98,23 @@ class Logs extends _Model {
 
 		if(isset($params['subject'])) {
 			$sql .= (stripos($sql, 'WHERE' ) === false) ? ' WHERE ' : ' AND ';
-			$sql .= ' MATCH(subject) AGAINST(?) ';
+			$sql .= ' MATCH(subject_line) AGAINST(?) ';
 
 			$vars[] = '%'.trim($params['subject']).'%';
 		}
 
-		if(isset($params['detail`'])) {
-			$sql .= (stripos($sql, 'WHERE' ) === false) ? ' WHERE ' : ' AND ';
-			$sql .= ' MATCH(detail) AGAINST(?) ';
+// 		if(isset($params['detail'])) {
+// 			$sql .= (stripos($sql, 'WHERE' ) === false) ? ' WHERE ' : ' AND ';
+// 			$sql .= ' MATCH(detail) AGAINST(?) ';
 
-			$vars[] = '%'.trim($params['subject']).'%';
-		}
-
-
+// 			$vars[] = '%'.trim($params['subject']).'%';
+// 		}
+// var_dump($sql); exit;
 		if($count_only) {
 			return $this->getOne($sql, array_values($vars) );
 		}
 
-		$sql .= " ORDER BY l.created DESC";
+		$sql .= " ORDER BY l.queue_date DESC";
 		$sql .= ' LIMIT ' . $start . ','. $limit;// . (int; // . ' OFFSET ' . ;
 // d($vars);
 // echo $sql;

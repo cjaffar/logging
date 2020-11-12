@@ -57,12 +57,12 @@ class Search extends _Controller
 		$log = new log($this->getConnection());
 		$client = new client($this->getConnection());
 
-		$systems = $this->getSettings('db');
+// 		$systems = $this->getSettings('db');
 
 		$result['clients'] = $client->getClients([], 1);
 		$result['min_date'] = $log->minLog();
-		$result['systems'] = (isset($systems['systems'])) ? $systems['systems'] : [];
-
+		$result['systems'] = $client->getSystems(); #(isset($systems['systems'])) ? $systems['systems'] : [];
+// \d($result); exit;
 		$result['min_date'] = isset($result['min_date']['created']) ? Carbon::now()->diffInDays( Carbon::parse($result['min_date']['created']))  : Carbon::now()->diffInDays( Carbon::parse('5 days ago') );
 
 		return $this->view('home.php', $result);
@@ -136,13 +136,14 @@ class Search extends _Controller
 		}
 
 		$r_client = $client->getClients( [ 'slug' => $client_slug], 1 );
+// var_dump($r_client);
 		if($r_client) {
 			$r_client = array_shift($r_client);
 		}
-
+// var_dump($r_client);exit;
 		$l_params = [];
 		if(!empty($r_client) ) {
-			$l_params['clientid'] = (isset($r_client['id'])) ? $r_client['id'] : false;
+			$l_params['clientid'] = (isset($r_client['guid'])) ? $r_client['guid'] : false;
 		}
 
 		if(isset($params['subject']) && !empty($params['subject'])){
@@ -172,8 +173,8 @@ class Search extends _Controller
 		if(isset($params['date2']) && !empty($params['date2'])){
 			$l_params['date2'] = date('Y-m-d', strtotime( $params['date2'] ) );
 		}
-
-		$cols = ['l.id','l.created','c.name as client', 'system','subject','address_from','address_to', 'address_replyto', 'subject', 'detail'];
+// var_dump($l_params); exit;
+		$cols = ['l.guid','l.created','c.name as client', 'system','REPLACE(from_address, \'"\', \'\' ) AS from_address','to_address', 'subject_line', 'dequeuer_line as detail']; // 'detail'];//'address_replyto', 
 		$record_count = $log->getLogs($l_params, $cols, true);
 
 		$pag = $this->paginationVars( $record_count['total'], $MAX_RECORDS, $page_number, $format );
@@ -181,6 +182,9 @@ class Search extends _Controller
 
 
 		$logs = $log->getLogs($l_params, $cols, false, $pag['start'], $pag['end']);
+		
+		//clear the logs, remove htmlchars
+		
 
 		$result = [ 'logs' => $logs, 'pagination' => $pag, 'num_pages' => $pag['num_pages']];
 		$result['pagination'] = '';
@@ -213,7 +217,7 @@ class Search extends _Controller
 		$logid = (isset($args['logid'])) ? $args['logid'] : 0;
 
 		$cols = ['l.id','l.created','c.name as client', 'system','slug','subject','address_from','address_to', 'address_replyto', 'subject', 'detail'];
-		$logs = $log->getLogs(['id' => $logid], $cols, false, 0, 1);
+		$logs = $log->getLogs(['guid' => $logid], $cols, false, 0, 1);
 
 		if($logs) { 
 			$logs = array_shift($logs);

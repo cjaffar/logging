@@ -9,7 +9,7 @@
 					<select class="form-control mb-2 mr-4" id="inputSystem" name="system">
 						<option value=''> - All - </option>
 						<?php foreach($systems as $system) : ?>
-							<option value="<?php echo $system; ?>"><?php echo $system; ?></option>
+							<option value="<?php echo $system['system']; ?>"><?php echo $system['system']; ?></option>
 						<?php endforeach; ?>
 					</select>
 					
@@ -54,8 +54,8 @@
 						<label class="sr-only" for="inlineAddressTo">From Address</label>
 						<input type="text" class="form-control mb-2 mr-sm-2" id="inlineAddressTo" name="inlineAddressTo" placeholder="To Email Address">
 						
-						<label class="sr-only" for="inlineAddressReplyTo">ReplyTo Address</label>
-						<input type="text" class="form-control mb-2 mr-sm-2" id="inlineAddressReplyTo" name="inlineAddressReplyTo" placeholder="ReplyTo Email Address">
+<!-- 						<label class="sr-only" for="inlineAddressReplyTo">ReplyTo Address</label> -->
+<!-- 						<input type="text" class="form-control mb-2 mr-sm-2" id="inlineAddressReplyTo" name="inlineAddressReplyTo" placeholder="ReplyTo Email Address"> -->
 
 						<label class="sr-only" for="inlineSubject">Subject</label>
 						<input type="text" class="form-control mb-2 mr-sm-2" id="inlineSubject" name="inlineSubject" placeholder="Subject">
@@ -96,7 +96,7 @@
 				<!-- <th>System</th> -->
 				<th>From</th>
 				<th>To</th>
-				<th>Reply To</th>
+<!-- 				<th>Reply To</th> -->
 				<th>Subject</th>
 				<th>Actions</th>
 			</tr>
@@ -107,7 +107,7 @@
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
+<!-- 			<td></td> -->
 			<td></td>
 			<td></td>
 		</tr>

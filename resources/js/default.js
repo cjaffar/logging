@@ -39,14 +39,14 @@ $(document).ready(function(){
                 	"data":"created",
                 },
                 // { "data":"system" },
-                { "data":"address_from" },
-                { "data":"address_to"},
-                { "data":"address_replyto"},
-                { "data":"subject"},
+                { "data":"from_address" },
+                { "data":"to_address"},
+//                { "data":"address_replyto"},
+                { "data":"subject_line"},
                 { 
-            		"data" : "id",
+            		"data" : "guid",
             		render:function(data, datatype, row, meta) {
-            			return '<a href="#" class="view-log" data-rowid="' + row['id'] + '" data-detail="' + row['detail'] + '"  data-system="' + row['system'] + '" data-subject="' + row['subject'] + '" data-created="' + row['created'] + '" data-email="' + row['address_from'] + '" data-to="' + row['address_to'] + '" data-detail="' + row['detail'] + '"><ion-icon name="eye-outline" size="medium"></ion-icon>&nbsp;&nbsp;View</a>' ;
+            			return '<a href="#" class="view-log" data-rowid="' + row['guid'] + '" data-detail="' + row['detail'] + '"  data-system="' + row['system'] + '" data-subject="' + row['subject_line'] + '" data-created="' + row['created'] + '" data-email="' + row['from_address'] + '" data-to="' + row['to_address'] + '" data-detail="' + row['detail'] + '"><ion-icon name="eye-outline" size="medium"></ion-icon>&nbsp;&nbsp;View</a>' ;
             		}
         		}
             ],

@@ -5,7 +5,7 @@ use PDO;
 
 class Client extends _Model {
 	
-	protected string $table = 'clients';
+	protected String $table = 'clients';
 
 	/**
 	* Constructor. Takes in PDO Conn
@@ -17,6 +17,14 @@ class Client extends _Model {
 	{
 		parent::__construct($connection);
 	}
+	
+	public function getSystems() {
+		$sql = "SELECT DISTINCT(system) FROM {$this->table}";
+		
+		$results = $this->getAll($sql, [], []);
+
+		return $results;
+	}
 
 	public function getClients(array $params, int $active): array
 	{
@@ -26,7 +34,7 @@ class Client extends _Model {
 		$vars['active'] = $active;
 		// $vars['1'] = 1;
 
-		$table_cols = [ 'id', 'system', 'slug', 'name', 'created' ];
+		$table_cols = [ 'guid', 'system', 'slug', 'name', 'created' ];
 		foreach($params as $k => $v) {
 			if(in_array($k, $table_cols) && !empty($v)) {
 				$vars[$k] = $v;
@@ -35,9 +43,10 @@ class Client extends _Model {
 
 		$sql .= implode(" = ? AND ", array_keys($vars)) . " = ?";
 		$sql .= " ORDER BY name ASC";
-
+// var_dump($vars);
+// 		var_dump($s/*  */ql); exit;
 		$results = $this->getAll($sql, array_values($vars) );
-
+// var_dump($results); exit;
 		return ($results) ? $results : [] ;
 	}
 

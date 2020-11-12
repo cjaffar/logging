@@ -31,7 +31,8 @@ class _Model
 	public function getAll(String $sql, array $vars) : array
 	{
 		$qry = $this->connection->prepare($sql);
-
+// var_dump($qry->queryString);
+// var_dump($vars);
 		$qry->execute($vars);
 
 		$results = $qry->fetchAll( PDO::FETCH_ASSOC );
